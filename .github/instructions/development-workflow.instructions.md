@@ -41,7 +41,7 @@ Frontend:
 
 ## CI Consistency
 
-GitHub Actions CI runs:
+GitHub Actions CI runs on Node 22 (required by dependencies including Prisma 7, Vite 8, Vitest 4):
 - frontend: install, test, build
 - backend: install, test, build
 
