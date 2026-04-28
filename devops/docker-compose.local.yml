@@ -1,0 +1,41 @@
+services:
+  postgres:
+    image: postgres:16
+    container_name: notesapp-postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: smart_notes
+    ports:
+      - "5432:5432"
+    volumes:
+      - notesapp-postgres-data:/var/lib/postgresql/data
+
+  backend:
+    build:
+      context: ../backend
+      dockerfile: ../devops/docker/backend/Dockerfile
+    container_name: notesapp-backend
+    environment:
+      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/smart_notes
+      PORT: 3001
+      HOST: 0.0.0.0
+      AI_MOCK_MODE: "true"
+      OPENAI_API_KEY: ""
+    depends_on:
+      - postgres
+    ports:
+      - "3001:3001"
+
+  frontend:
+    build:
+      context: ..
+      dockerfile: devops/docker/frontend/Dockerfile
+    container_name: notesapp-frontend
+    depends_on:
+      - backend
+    ports:
+      - "8080:80"
+
+volumes:
+  notesapp-postgres-data:

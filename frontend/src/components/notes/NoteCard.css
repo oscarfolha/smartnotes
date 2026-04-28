@@ -1,0 +1,31 @@
+.note-card {
+  cursor: pointer;
+}
+
+.note-card:hover {
+  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.2);
+}
+
+.note-card-header {
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+}
+
+.note-card-meta {
+  margin-bottom: 0.5rem;
+}
+
+.note-card-content {
+  min-height: 2.625rem;
+}
+
+.note-card-tags {
+  flex-wrap: wrap;
+  margin-top: 0.5rem;
+}
+
+.note-card-actions {
+  justify-content: space-between;
+  padding-inline: 1rem;
+  padding-top: 0;
+}

@@ -1,0 +1,26 @@
+.dashboard-period-control {
+  min-width: 10.625rem;
+}
+
+.dashboard-stats-grid {
+  margin-bottom: 0.75rem;
+}
+
+.dashboard-stat-value {
+  font-weight: 700;
+}
+
+.dashboard-reminders-card {
+  margin-bottom: 0.75rem;
+  border: 1px solid #ef9a9a;
+  background: rgba(244, 67, 54, 0.12);
+}
+
+.dashboard-reminders-title {
+  font-weight: 700;
+}
+
+.dashboard-notes-title {
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}

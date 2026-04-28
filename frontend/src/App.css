@@ -1,0 +1,12 @@
+* {
+  box-sizing: border-box;
+}
+
+p {
+  margin: 0;
+}
+
+.rbc-calendar {
+  font-family: inherit;
+}
+

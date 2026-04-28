@@ -1,0 +1,70 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum NoteType {
+  reminder
+  meeting
+  note
+  idea
+}
+
+enum Priority {
+  low
+  medium
+  high
+}
+
+model Note {
+  id        String    @id @default(uuid())
+  title     String
+  content   String
+  type      NoteType  @default(note)
+  date      DateTime
+  priority  Priority  @default(medium)
+  summary   String?
+  metadata  Json?
+  order     Int       @default(0)
+  archived  Boolean   @default(false)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  reminder  Reminder?
+  noteTags  NoteTag[]
+}
+
+model Reminder {
+  id        String   @id @default(uuid())
+  noteId    String   @unique
+  remindAt  DateTime
+  recurring Boolean  @default(false)
+  done      Boolean  @default(false)
+  snoozedTo DateTime?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  note Note @relation(fields: [noteId], references: [id], onDelete: Cascade)
+}
+
+model Tag {
+  id       String    @id @default(uuid())
+  name     String    @unique
+  noteTags NoteTag[]
+}
+
+model NoteTag {
+  noteId String
+  tagId  String
+
+  note Note @relation(fields: [noteId], references: [id], onDelete: Cascade)
+  tag  Tag  @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+  @@id([noteId, tagId])
+}

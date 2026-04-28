@@ -1,0 +1,30 @@
+.notes-filter-card,
+.notes-selection-card {
+  margin-bottom: 0.75rem;
+}
+
+.notes-filter-control {
+  min-width: 10rem;
+}
+
+.notes-preset-stack {
+  margin-top: 0.75rem;
+}
+
+.notes-preset-load {
+  min-width: 11.25rem;
+}
+
+.notes-quick-presets {
+  margin-top: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.notes-selected-actions {
+  justify-content: space-between;
+  align-items: center;
+}
+
+.notes-item-wrapper {
+  padding: 0.25rem;
+}

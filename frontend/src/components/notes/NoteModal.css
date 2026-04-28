@@ -1,0 +1,12 @@
+.note-modal-stack {
+  margin-top: 0.5rem;
+}
+
+.note-modal-reminder-hint {
+  padding-block: 0.5rem;
+}
+
+.note-modal-activity {
+  max-height: 7.5rem;
+  overflow-y: auto;
+}

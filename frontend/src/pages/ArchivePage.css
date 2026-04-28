@@ -1,0 +1,39 @@
+.archive-note-card {
+  cursor: pointer;
+}
+
+.archive-note-card:hover {
+  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.2);
+}
+
+.archive-note-header {
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+}
+
+.archive-note-content {
+  min-height: 2.625rem;
+}
+
+.archive-note-actions {
+  padding-inline: 1rem;
+  padding-bottom: 1rem;
+}
+
+.archive-filter-card,
+.archive-selection-card {
+  margin-bottom: 0.75rem;
+}
+
+.archive-filter-control {
+  min-width: 10rem;
+}
+
+.archive-selected-actions {
+  justify-content: space-between;
+  align-items: center;
+}
+
+.archive-item-wrapper {
+  padding: 0.25rem;
+}
