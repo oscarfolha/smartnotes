@@ -22,30 +22,9 @@ jobs:
         with:
           node-version: 22
 
-      - name: Show Node and npm versions
-        run: |
-          node --version
-          npm --version
-
-      - name: Pin npm 10.x
-        run: npm install -g npm@10.8.2
-
-      - name: Show pinned npm version
-        run: npm --version
-
-      - name: Reset npm cache
-        run: npm cache clean --force
-
       - name: Install dependencies
         working-directory: frontend
-        run: |
-          npm ci --no-audit --no-fund || {
-            echo "npm ci failed; dumping npm debug logs"
-            ls -la /home/runner/.npm/_logs || true
-            cat /home/runner/.npm/_logs/*-debug-0.log || true
-            echo "Falling back to npm install"
-            npm install --no-audit --no-fund
-          }
+        run: npm install --no-audit --no-fund
 
       - name: Run unit tests
         working-directory: frontend
@@ -68,30 +47,9 @@ jobs:
         with:
           node-version: 22
 
-      - name: Show Node and npm versions
-        run: |
-          node --version
-          npm --version
-
-      - name: Pin npm 10.x
-        run: npm install -g npm@10.8.2
-
-      - name: Show pinned npm version
-        run: npm --version
-
-      - name: Reset npm cache
-        run: npm cache clean --force
-
       - name: Install dependencies
         working-directory: backend
-        run: |
-          npm ci --no-audit --no-fund || {
-            echo "npm ci failed; dumping npm debug logs"
-            ls -la /home/runner/.npm/_logs || true
-            cat /home/runner/.npm/_logs/*-debug-0.log || true
-            echo "Falling back to npm install"
-            npm install --no-audit --no-fund
-          }
+        run: npm install --no-audit --no-fund
 
       - name: Run unit tests
         working-directory: backend
