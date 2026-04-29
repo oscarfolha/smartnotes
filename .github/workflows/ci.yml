@@ -38,7 +38,14 @@ jobs:
 
       - name: Install dependencies
         working-directory: frontend
-        run: npm ci --no-audit --no-fund
+        run: |
+          npm ci --no-audit --no-fund || {
+            echo "npm ci failed; dumping npm debug logs"
+            ls -la /home/runner/.npm/_logs || true
+            cat /home/runner/.npm/_logs/*-debug-0.log || true
+            echo "Falling back to npm install"
+            npm install --no-audit --no-fund
+          }
 
       - name: Run unit tests
         working-directory: frontend
@@ -77,7 +84,14 @@ jobs:
 
       - name: Install dependencies
         working-directory: backend
-        run: npm ci --no-audit --no-fund
+        run: |
+          npm ci --no-audit --no-fund || {
+            echo "npm ci failed; dumping npm debug logs"
+            ls -la /home/runner/.npm/_logs || true
+            cat /home/runner/.npm/_logs/*-debug-0.log || true
+            echo "Falling back to npm install"
+            npm install --no-audit --no-fund
+          }
 
       - name: Run unit tests
         working-directory: backend
