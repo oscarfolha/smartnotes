@@ -2,6 +2,12 @@
 
 Smart Notes is a full-stack notes application with calendar support, persistent reminders, archive workflows, drag-and-drop ordering, bulk actions, command palette, and optional AI assistance.
 
+## AI-Built Statement
+
+This project was entirely built with AI-assisted development workflows.
+
+Primary implementation support was done through GitHub Copilot to design, generate, iterate, and refine both frontend and backend code.
+
 ## Stack
 
 - Frontend: React 19, TypeScript, Vite, MUI, Zustand, TanStack Query
