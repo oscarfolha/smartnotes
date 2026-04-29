@@ -27,6 +27,12 @@ jobs:
           node --version
           npm --version
 
+      - name: Pin npm 10.x
+        run: npm install -g npm@10.8.2
+
+      - name: Show pinned npm version
+        run: npm --version
+
       - name: Reset npm cache
         run: npm cache clean --force
 
@@ -59,6 +65,12 @@ jobs:
         run: |
           node --version
           npm --version
+
+      - name: Pin npm 10.x
+        run: npm install -g npm@10.8.2
+
+      - name: Show pinned npm version
+        run: npm --version
 
       - name: Reset npm cache
         run: npm cache clean --force
