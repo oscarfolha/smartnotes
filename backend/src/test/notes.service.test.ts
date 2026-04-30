@@ -11,6 +11,9 @@ vi.mock('../modules/notes/notes.repository', () => ({
     archive: vi.fn(),
     unarchive: vi.fn(),
     findArchived: vi.fn(),
+    findFilterPresets: vi.fn(),
+    createFilterPreset: vi.fn(),
+    deleteFilterPreset: vi.fn(),
   },
 }));
 
@@ -45,5 +48,18 @@ describe('notesService', () => {
     vi.mocked(notesRepository.findArchived).mockResolvedValue([{ id: 'a' }] as any);
     const res = await notesService.getArchived();
     expect(res).toEqual([{ id: 'a' }]);
+  });
+
+  it('returns filter presets', async () => {
+    vi.mocked(notesRepository.findFilterPresets).mockResolvedValue([{ id: 'p1', name: 'Work' }] as any);
+    const res = await notesService.getFilterPresets();
+    expect(res).toEqual([{ id: 'p1', name: 'Work' }]);
+  });
+
+  it('creates filter preset', async () => {
+    vi.mocked(notesRepository.createFilterPreset).mockResolvedValue({ id: 'p2', name: 'Urgent' } as any);
+    const res = await notesService.createFilterPreset({ name: 'Urgent' });
+    expect(notesRepository.createFilterPreset).toHaveBeenCalledWith({ name: 'Urgent' });
+    expect(res).toEqual({ id: 'p2', name: 'Urgent' });
   });
 });

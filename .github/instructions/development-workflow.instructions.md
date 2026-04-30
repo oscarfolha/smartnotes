@@ -28,6 +28,7 @@ Default ports:
 Backend:
 - `npm --prefix backend test`
 - `npm --prefix backend run build`
+- `predev` and `prebuild` auto-run `db:generate` to keep Prisma client generated.
 
 Frontend:
 - `npm --prefix frontend test`
@@ -60,6 +61,7 @@ When scripts are changed in `package.json`, update CI workflow and README in the
 
 - Prisma or generated client errors:
   - Run `npm --prefix backend run db:generate`.
+  - If `prisma generate` cannot download engines behind a corporate proxy, set `HTTP_PROXY` and `HTTPS_PROXY` in your shell/session before running backend scripts.
 
 - Failing tests in CI but passing locally:
   - Ensure lockfiles are committed.

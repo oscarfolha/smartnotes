@@ -18,41 +18,28 @@ import {
   Tooltip,
 } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
-import { useNotes, useArchiveNote, useCreateNote } from '../hooks/useNotes';
+import { useNotes, useArchiveNote, useCreateNote, useNotePresets, useCreateNotePreset, useDeleteNotePreset } from '../hooks/useNotes';
 import { useNotesStore } from '../store/notes.store';
 import { useTags } from '../hooks/useTags';
 import { NoteCard } from '../components/notes/NoteCard';
 import { useAppPreferences } from '../contexts/appPreferences';
-import type { NoteType, Priority } from '../types';
+import type { NoteType, Priority, NoteFilterPreset } from '../types';
+import { splitFavoriteNotes } from '../utils/notes';
+import { noteTypeLabel, priorityLabel } from '../utils/i18n';
 import './NotesPage.css';
 
-const PRESETS_KEY = 'notes-filter-presets';
-const LEGACY_PRESETS_KEY = 'notes-filters-presets';
-
-interface FilterPreset {
-  name: string;
-  search?: string;
-  type?: NoteType;
-  priority?: Priority;
-  tagId?: string;
-}
-
-function loadSavedPresets(): FilterPreset[] {
-  const raw = globalThis.localStorage.getItem(PRESETS_KEY) ?? globalThis.localStorage.getItem(LEGACY_PRESETS_KEY);
-  if (!raw) return [];
-  try {
-    const parsed = JSON.parse(raw) as unknown;
-    if (!Array.isArray(parsed)) return [];
-    return parsed.filter((item): item is FilterPreset => {
-      return !!item && typeof item === 'object' && typeof (item as { name?: unknown }).name === 'string';
-    });
-  } catch {
-    return [];
-  }
-}
-
-function persistPresets(next: FilterPreset[]) {
-  globalThis.localStorage.setItem(PRESETS_KEY, JSON.stringify(next));
+export function buildFilterPreset(
+  name: string,
+  search: string,
+  filters: { type?: NoteType; priority?: Priority; tagId?: string }
+): Pick<NoteFilterPreset, 'name' | 'search' | 'type' | 'priority' | 'tagId'> {
+  return {
+    name,
+    search: search || undefined,
+    type: filters.type,
+    priority: filters.priority,
+    tagId: filters.tagId,
+  };
 }
 
 export function NotesPage() {
@@ -61,15 +48,21 @@ export function NotesPage() {
   const { data: tags = [] } = useTags();
   const archiveNote = useArchiveNote();
   const createNote = useCreateNote();
+  const { data: presets = [] } = useNotePresets();
+  const createPresetMutation = useCreateNotePreset();
+  const deletePresetMutation = useDeleteNotePreset();
   const { t } = useAppPreferences();
   const [search, setSearch] = useState(filters.search ?? '');
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [presetName, setPresetName] = useState('');
   const [presetToLoad, setPresetToLoad] = useState('');
   const [snackbarMessage, setSnackbarMessage] = useState<string | null>(null);
-  const [presets, setPresets] = useState<FilterPreset[]>(loadSavedPresets);
 
   const visibleNotes = useMemo(() => notes.filter((n) => !n.archived), [notes]);
+  const { favorites: favoriteNotes, regular: regularNotes } = useMemo(
+    () => splitFavoriteNotes(visibleNotes),
+    [visibleNotes]
+  );
 
   function handleSearch(e: React.ChangeEvent<HTMLInputElement>) {
     setSearch(e.target.value);
@@ -83,21 +76,22 @@ export function NotesPage() {
     setSnackbarMessage(`${selectedIds.length} ${t('archiveSelected')}`);
   }
 
-  function savePreset() {
+  async function savePreset() {
     const name = presetName.trim();
     if (!name) return;
-    const next = [
-      ...presets.filter((p) => p.name !== name),
-      { name, search: search || undefined, type: filters.type, priority: filters.priority, tagId: filters.tagId },
-    ];
-    setPresets(next);
-    persistPresets(next);
-    setPresetToLoad(name);
+    const latestFilters = useNotesStore.getState().filters;
+    const nextPreset = buildFilterPreset(name, search, {
+      type: latestFilters.type,
+      priority: latestFilters.priority,
+      tagId: latestFilters.tagId,
+    });
+    const created = await createPresetMutation.mutateAsync(nextPreset);
+    setPresetToLoad(created.id);
     setPresetName('');
   }
 
-  function loadPreset(name: string) {
-    const preset = presets.find((p) => p.name === name);
+  function loadPreset(id: string) {
+    const preset = presets.find((p) => p.id === id);
     if (!preset) return;
     setSearch(preset.search ?? '');
     setFilters({
@@ -108,11 +102,9 @@ export function NotesPage() {
     });
   }
 
-  function removePreset(name: string) {
-    const next = presets.filter((p) => p.name !== name);
-    setPresets(next);
-    persistPresets(next);
-    if (presetToLoad === name) setPresetToLoad('');
+  async function removePreset(id: string) {
+    await deletePresetMutation.mutateAsync(id);
+    if (presetToLoad === id) setPresetToLoad('');
   }
 
   function toggleSelectedNote(noteId: string, checked: boolean) {
@@ -164,8 +156,8 @@ export function NotesPage() {
                 onChange={(e) => setFilters({ type: (e.target.value as NoteType) || undefined })}
               >
                 <MenuItem value="">{t('allTypes')}</MenuItem>
-                {(['note', 'reminder', 'meeting', 'idea'] as NoteType[]).map((t) => (
-                  <MenuItem key={t} value={t}>{t}</MenuItem>
+                {(['note', 'reminder', 'meeting', 'idea'] as NoteType[]).map((noteTypeOption) => (
+                  <MenuItem key={noteTypeOption} value={noteTypeOption}>{noteTypeLabel(noteTypeOption, t)}</MenuItem>
                 ))}
               </Select>
             </FormControl>
@@ -179,7 +171,7 @@ export function NotesPage() {
               >
                 <MenuItem value="">{t('allPriorities')}</MenuItem>
                 {(['low', 'medium', 'high'] as Priority[]).map((p) => (
-                  <MenuItem key={p} value={p}>{p}</MenuItem>
+                  <MenuItem key={p} value={p}>{priorityLabel(p, t)}</MenuItem>
                 ))}
               </Select>
             </FormControl>
@@ -212,6 +204,7 @@ export function NotesPage() {
             <FormControl className="notes-preset-load" size="small">
               <InputLabel>{t('loadPreset')}</InputLabel>
               <Select
+                fullWidth
                 label={t('loadPreset')}
                 value={presetToLoad}
                 onChange={(e) => {
@@ -222,7 +215,7 @@ export function NotesPage() {
               >
                 <MenuItem value="">-</MenuItem>
                 {presets.map((preset) => (
-                  <MenuItem key={preset.name} value={preset.name}>{preset.name}</MenuItem>
+                  <MenuItem key={preset.id} value={preset.id}>{preset.name}</MenuItem>
                 ))}
               </Select>
             </FormControl>
@@ -240,12 +233,12 @@ export function NotesPage() {
             <Stack direction="row" spacing={1} className="notes-quick-presets">
               {presets.map((preset) => (
                 <Button
-                  key={`quick-${preset.name}`}
-                  variant={presetToLoad === preset.name ? 'contained' : 'text'}
+                  key={`quick-${preset.id}`}
+                  variant={presetToLoad === preset.id ? 'contained' : 'text'}
                   size="small"
                   onClick={() => {
-                    setPresetToLoad(preset.name);
-                    loadPreset(preset.name);
+                    setPresetToLoad(preset.id);
+                    loadPreset(preset.id);
                   }}
                 >
                   {preset.name}
@@ -279,9 +272,28 @@ export function NotesPage() {
         </Card>
       )}
 
-      {!isLoading && !isEmpty && (
+      {!isLoading && !isEmpty && favoriteNotes.length > 0 && (
+        <>
+          <Typography variant="h6" className="notes-favorites-title">{t('favorite')}</Typography>
+          <Grid container spacing={2} className="notes-favorites-grid">
+            {favoriteNotes.map((note) => (
+              <Grid key={note.id} size={{ xs: 12, sm: 6, lg: 4 }}>
+                <Card className="notes-item-wrapper">
+                  <Checkbox
+                    checked={selectedIds.includes(note.id)}
+                    onChange={(e) => toggleSelectedNote(note.id, e.target.checked)}
+                  />
+                  <NoteCard note={note} />
+                </Card>
+              </Grid>
+            ))}
+          </Grid>
+        </>
+      )}
+
+      {!isLoading && !isEmpty && regularNotes.length > 0 && (
         <Grid container spacing={2}>
-          {visibleNotes.map((note) => (
+          {regularNotes.map((note) => (
             <Grid key={note.id} size={{ xs: 12, sm: 6, lg: 4 }}>
               <Card className="notes-item-wrapper">
                 <Checkbox

@@ -1,5 +1,5 @@
 import api from './api';
-import type { Note, CreateNoteDto, UpdateNoteDto, NoteFilters } from '../types';
+import type { Note, CreateNoteDto, UpdateNoteDto, NoteFilters, NoteFilterPreset } from '../types';
 
 export const notesApi = {
   getAll: (filters?: NoteFilters) =>
@@ -25,4 +25,13 @@ export const notesApi = {
 
   getArchived: () =>
     api.get<Note[]>('/notes/archived').then((r) => r.data),
+
+  getPresets: () =>
+    api.get<NoteFilterPreset[]>('/notes/presets').then((r) => r.data),
+
+  createPreset: (data: Pick<NoteFilterPreset, 'name' | 'search' | 'type' | 'priority' | 'tagId'>) =>
+    api.post<NoteFilterPreset>('/notes/presets', data).then((r) => r.data),
+
+  deletePreset: (id: string) =>
+    api.delete(`/notes/presets/${id}`),
 };

@@ -40,4 +40,18 @@ describe('notesApi', () => {
     expect(patchMock).toHaveBeenNthCalledWith(1, '/notes/n1/archive');
     expect(patchMock).toHaveBeenNthCalledWith(2, '/notes/n1/unarchive');
   });
+
+  it('calls preset endpoints', async () => {
+    getMock.mockResolvedValue({ data: [] });
+    postMock.mockResolvedValue({ data: { id: 'p1' } });
+    deleteMock.mockResolvedValue({});
+
+    await notesApi.getPresets();
+    await notesApi.createPreset({ name: 'Work', search: 'meeting' });
+    await notesApi.deletePreset('p1');
+
+    expect(getMock).toHaveBeenCalledWith('/notes/presets');
+    expect(postMock).toHaveBeenCalledWith('/notes/presets', { name: 'Work', search: 'meeting' });
+    expect(deleteMock).toHaveBeenCalledWith('/notes/presets/p1');
+  });
 });

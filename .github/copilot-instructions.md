@@ -41,6 +41,7 @@ Backend:
 - `npm --prefix backend run build`
 - `npm --prefix backend run db:generate`
 - `npm --prefix backend run db:migrate`
+- Backend `predev`/`prebuild` run `db:generate` automatically.
 
 ## Coding Conventions
 

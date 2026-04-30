@@ -2,6 +2,9 @@ import { FastifyInstance } from 'fastify';
 import { notesController } from './notes.controller';
 
 export async function notesRoutes(app: FastifyInstance) {
+  app.get('/presets', notesController.getFilterPresets);
+  app.post('/presets', notesController.createFilterPreset);
+  app.delete('/presets/:id', notesController.deleteFilterPreset);
   app.get('/', notesController.getAll);
   app.get('/archived', notesController.getArchived);
   app.get('/:id', notesController.getById);

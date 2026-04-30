@@ -9,6 +9,7 @@ export const CreateNoteSchema = z.object({
   type: NoteTypeEnum.default('note'),
   date: z.string().datetime(),
   priority: PriorityEnum.default('medium'),
+  favorite: z.boolean().optional(),
   tagIds: z.array(z.string().uuid()).optional(),
   remindAt: z.string().datetime().optional(),
   recurring: z.boolean().optional(),
@@ -26,6 +27,15 @@ export const NoteFiltersSchema = z.object({
   search: z.string().optional(),
 });
 
+export const CreateFilterPresetSchema = z.object({
+  name: z.string().min(1).max(120),
+  search: z.string().optional(),
+  type: NoteTypeEnum.optional(),
+  priority: PriorityEnum.optional(),
+  tagId: z.string().uuid().optional(),
+});
+
 export type CreateNoteDto = z.infer<typeof CreateNoteSchema>;
 export type UpdateNoteDto = z.infer<typeof UpdateNoteSchema>;
 export type NoteFiltersDto = z.infer<typeof NoteFiltersSchema>;
+export type CreateFilterPresetDto = z.infer<typeof CreateFilterPresetSchema>;

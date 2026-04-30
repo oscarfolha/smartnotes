@@ -21,6 +21,7 @@ import { useArchivedNotes, useUnarchiveNote, useDeleteNote } from '../hooks/useN
 import { useAppPreferences } from '../contexts/appPreferences';
 import { useTags } from '../hooks/useTags';
 import type { NoteType, Priority, Note } from '../types';
+import { noteTypeLabel, priorityLabel } from '../utils/i18n';
 import './ArchivePage.css';
 
 export function ArchivePage() {
@@ -145,7 +146,7 @@ export function ArchivePage() {
               >
                 <MenuItem value="">{t('allTypes')}</MenuItem>
                 {(['note', 'reminder', 'meeting', 'idea'] as NoteType[]).map((noteType) => (
-                  <MenuItem key={noteType} value={noteType}>{noteType}</MenuItem>
+                  <MenuItem key={noteType} value={noteType}>{noteTypeLabel(noteType, t)}</MenuItem>
                 ))}
               </Select>
             </FormControl>
@@ -159,7 +160,7 @@ export function ArchivePage() {
               >
                 <MenuItem value="">{t('allPriorities')}</MenuItem>
                 {(['low', 'medium', 'high'] as Priority[]).map((priority) => (
-                  <MenuItem key={priority} value={priority}>{priority}</MenuItem>
+                  <MenuItem key={priority} value={priority}>{priorityLabel(priority, t)}</MenuItem>
                 ))}
               </Select>
             </FormControl>

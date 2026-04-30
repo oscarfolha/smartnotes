@@ -29,6 +29,7 @@ model Note {
   type      NoteType  @default(note)
   date      DateTime
   priority  Priority  @default(medium)
+  favorite  Boolean   @default(false)
   summary   String?
   metadata  Json?
   order     Int       @default(0)
@@ -67,4 +68,15 @@ model NoteTag {
   tag  Tag  @relation(fields: [tagId], references: [id], onDelete: Cascade)
 
   @@id([noteId, tagId])
+}
+
+model FilterPreset {
+  id        String    @id @default(uuid())
+  name      String
+  search    String?
+  type      NoteType?
+  priority  Priority?
+  tagId     String?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
 }

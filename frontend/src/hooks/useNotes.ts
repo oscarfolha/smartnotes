@@ -4,6 +4,7 @@ import { useNotesStore } from '../store/notes.store';
 import type { CreateNoteDto, UpdateNoteDto } from '../types';
 
 export const NOTES_KEY = 'notes';
+export const NOTE_PRESETS_KEY = 'notePresets';
 
 export function useNotes() {
   const { filters } = useNotesStore();
@@ -89,5 +90,28 @@ export function useArchivedNotes() {
   return useQuery({
     queryKey: ['archivedNotes'],
     queryFn: () => notesApi.getArchived(),
+  });
+}
+
+export function useNotePresets() {
+  return useQuery({
+    queryKey: [NOTE_PRESETS_KEY],
+    queryFn: () => notesApi.getPresets(),
+  });
+}
+
+export function useCreateNotePreset() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (data: Parameters<typeof notesApi.createPreset>[0]) => notesApi.createPreset(data),
+    onSuccess: () => qc.invalidateQueries({ queryKey: [NOTE_PRESETS_KEY] }),
+  });
+}
+
+export function useDeleteNotePreset() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (id: string) => notesApi.deletePreset(id),
+    onSuccess: () => qc.invalidateQueries({ queryKey: [NOTE_PRESETS_KEY] }),
   });
 }

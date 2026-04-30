@@ -25,6 +25,7 @@ import { useNote, useCreateNote, useUpdateNote } from '../../hooks/useNotes';
 import { TagSelector } from '../tags/TagSelector';
 import { useAppPreferences } from '../../contexts/appPreferences';
 import type { NoteType, Priority } from '../../types';
+import { activityEventLabel, noteTypeLabel, priorityLabel } from '../../utils/i18n';
 import './NoteModal.css';
 
 const schema = z.object({
@@ -43,7 +44,7 @@ export function NoteModal() {
   const { data: existingNote } = useNote(selectedNoteId);
   const createNote = useCreateNote();
   const updateNote = useUpdateNote();
-  const { t } = useAppPreferences();
+  const { t, language } = useAppPreferences();
 
   const {
     register,
@@ -108,7 +109,7 @@ export function NoteModal() {
     submitLabel = t('update');
   }
   if (isSubmitting) {
-    submitLabel = 'Saving...';
+    submitLabel = t('saving');
   }
 
   return (
@@ -137,9 +138,9 @@ export function NoteModal() {
                   value={watch('type')}
                   onChange={(e) => setValue('type', e.target.value as NoteType)}
                 >
-                  {(['note', 'reminder', 'meeting', 'idea'] as NoteType[]).map((t) => (
-                    <MenuItem key={t} value={t}>
-                      {t.charAt(0).toUpperCase() + t.slice(1)}
+                  {(['note', 'reminder', 'meeting', 'idea'] as NoteType[]).map((noteTypeOption) => (
+                    <MenuItem key={noteTypeOption} value={noteTypeOption}>
+                      {noteTypeLabel(noteTypeOption, t)}
                     </MenuItem>
                   ))}
                 </Select>
@@ -159,7 +160,7 @@ export function NoteModal() {
                   >
                     {(['low', 'medium', 'high'] as Priority[]).map((p) => (
                       <MenuItem key={p} value={p}>
-                        {p.charAt(0).toUpperCase() + p.slice(1)}
+                        {priorityLabel(p, t)}
                       </MenuItem>
                     ))}
                   </Select>
@@ -185,7 +186,7 @@ export function NoteModal() {
 
           {noteType === 'reminder' && (
             <Typography variant="body2" color="text.secondary" className="note-modal-reminder-hint">
-              Reminder notifications are persistent. You will keep receiving them on dashboard until you mark them done or change note type.
+              {t('reminderPersistentHint')}
             </Typography>
           )}
 
@@ -210,11 +211,11 @@ export function NoteModal() {
           {selectedNoteId && Array.isArray(existingNote?.metadata?.activity) && existingNote.metadata.activity.length > 0 && (
             <>
               <Divider />
-              <Typography variant="subtitle2">Activity timeline</Typography>
+              <Typography variant="subtitle2">{t('activityTimeline')}</Typography>
               <Stack spacing={0.5} className="note-modal-activity">
                 {existingNote.metadata.activity.slice().reverse().map((entry, idx) => (
                   <Typography key={`${entry.at}-${idx}`} variant="caption" color="text.secondary">
-                    {entry.event} - {new Date(entry.at).toLocaleString()}
+                    {activityEventLabel(entry.event, t)} - {new Date(entry.at).toLocaleString(language)}
                   </Typography>
                 ))}
               </Stack>

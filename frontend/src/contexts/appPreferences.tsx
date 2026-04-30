@@ -6,6 +6,7 @@ export type AppThemeMode = 'light' | 'dark';
 
 type TranslationKey =
   | 'appName'
+  | 'favorite'
   | 'dashboard'
   | 'calendar'
   | 'notes'
@@ -69,13 +70,45 @@ type TranslationKey =
   | 'askAiPlaceholder'
   | 'aiThinking'
   | 'aiAssistantTitle'
-  | 'aiHelperText';
+  | 'aiHelperText'
+  | 'calendar_time'
+  | 'calendar_event'
+  | 'calendar_allDay'
+  | 'calendar_workWeek'
+  | 'calendar_day'
+  | 'calendar_previous'
+  | 'calendar_next'
+  | 'calendar_yesterday'
+  | 'calendar_tomorrow'
+  | 'calendar_today'
+  | 'calendar_agenda'
+  | 'calendar_noEventsInRange'
+  | 'calendar_showMore'
+  | 'noteType_note'
+  | 'noteType_reminder'
+  | 'noteType_meeting'
+  | 'noteType_idea'
+  | 'priority_low'
+  | 'priority_medium'
+  | 'priority_high'
+  | 'activityTimeline'
+  | 'activity_created'
+  | 'activity_updated'
+  | 'activity_archived'
+  | 'activity_restored'
+  | 'activity_deleted'
+  | 'tags'
+  | 'newTagPlaceholder'
+  | 'add'
+  | 'saving'
+  | 'reminderPersistentHint';
 
 type TranslationMap = Record<TranslationKey, string>;
 
 const translations: Record<AppLanguage, TranslationMap> = {
   en: {
     appName: 'Smart Notes',
+    favorite: 'Favorite',
     dashboard: 'Dashboard',
     calendar: 'Calendar',
     notes: 'Notes',
@@ -140,9 +173,41 @@ const translations: Record<AppLanguage, TranslationMap> = {
     aiThinking: 'AI is thinking...',
     aiAssistantTitle: 'Smart Notes Assistant',
     aiHelperText: 'Ask about your notes, summary, meetings, or reminders',
+    calendar_time: 'Time',
+    calendar_event: 'Event',
+    calendar_allDay: 'All day',
+    calendar_workWeek: 'Work week',
+    calendar_day: 'Day',
+    calendar_previous: 'Back',
+    calendar_next: 'Next',
+    calendar_yesterday: 'Yesterday',
+    calendar_tomorrow: 'Tomorrow',
+    calendar_today: 'Today',
+    calendar_agenda: 'Agenda',
+    calendar_noEventsInRange: 'No events in this range',
+    calendar_showMore: '+{count} more',
+    noteType_note: 'Note',
+    noteType_reminder: 'Reminder',
+    noteType_meeting: 'Meeting',
+    noteType_idea: 'Idea',
+    priority_low: 'Low',
+    priority_medium: 'Medium',
+    priority_high: 'High',
+    activityTimeline: 'Activity timeline',
+    activity_created: 'Created',
+    activity_updated: 'Updated',
+    activity_archived: 'Archived',
+    activity_restored: 'Restored',
+    activity_deleted: 'Deleted',
+    tags: 'Tags',
+    newTagPlaceholder: 'New tag...',
+    add: 'Add',
+    saving: 'Saving...',
+    reminderPersistentHint: 'Reminder notifications are persistent. You will keep receiving them on dashboard until you mark them done or change note type.',
   },
   pt: {
     appName: 'Smart Notes',
+    favorite: 'Favorita',
     dashboard: 'Painel',
     calendar: 'Calendario',
     notes: 'Notas',
@@ -207,9 +272,41 @@ const translations: Record<AppLanguage, TranslationMap> = {
     aiThinking: 'IA esta pensando...',
     aiAssistantTitle: 'Assistente Smart Notes',
     aiHelperText: 'Pergunte sobre notas, resumo, reunioes ou lembretes',
+    calendar_time: 'Hora',
+    calendar_event: 'Evento',
+    calendar_allDay: 'Dia inteiro',
+    calendar_workWeek: 'Semana util',
+    calendar_day: 'Dia',
+    calendar_previous: 'Anterior',
+    calendar_next: 'Proximo',
+    calendar_yesterday: 'Ontem',
+    calendar_tomorrow: 'Amanha',
+    calendar_today: 'Hoje',
+    calendar_agenda: 'Agenda',
+    calendar_noEventsInRange: 'Sem eventos neste periodo',
+    calendar_showMore: '+{count} mais',
+    noteType_note: 'Nota',
+    noteType_reminder: 'Lembrete',
+    noteType_meeting: 'Reuniao',
+    noteType_idea: 'Ideia',
+    priority_low: 'Baixa',
+    priority_medium: 'Media',
+    priority_high: 'Alta',
+    activityTimeline: 'Linha do tempo',
+    activity_created: 'Criada',
+    activity_updated: 'Atualizada',
+    activity_archived: 'Arquivada',
+    activity_restored: 'Restaurada',
+    activity_deleted: 'Excluida',
+    tags: 'Tags',
+    newTagPlaceholder: 'Nova tag...',
+    add: 'Adicionar',
+    saving: 'Salvando...',
+    reminderPersistentHint: 'Notificacoes de lembrete sao persistentes. Voce continuara recebendo no painel ate marcar como concluido ou alterar o tipo da nota.',
   },
   es: {
     appName: 'Smart Notes',
+    favorite: 'Favorita',
     dashboard: 'Panel',
     calendar: 'Calendario',
     notes: 'Notas',
@@ -274,6 +371,37 @@ const translations: Record<AppLanguage, TranslationMap> = {
     aiThinking: 'La IA esta pensando...',
     aiAssistantTitle: 'Asistente Smart Notes',
     aiHelperText: 'Pregunta sobre notas, resumen, reuniones o recordatorios',
+    calendar_time: 'Hora',
+    calendar_event: 'Evento',
+    calendar_allDay: 'Todo el dia',
+    calendar_workWeek: 'Semana laboral',
+    calendar_day: 'Dia',
+    calendar_previous: 'Anterior',
+    calendar_next: 'Siguiente',
+    calendar_yesterday: 'Ayer',
+    calendar_tomorrow: 'Manana',
+    calendar_today: 'Hoy',
+    calendar_agenda: 'Agenda',
+    calendar_noEventsInRange: 'No hay eventos en este rango',
+    calendar_showMore: '+{count} mas',
+    noteType_note: 'Nota',
+    noteType_reminder: 'Recordatorio',
+    noteType_meeting: 'Reunion',
+    noteType_idea: 'Idea',
+    priority_low: 'Baja',
+    priority_medium: 'Media',
+    priority_high: 'Alta',
+    activityTimeline: 'Linea de tiempo',
+    activity_created: 'Creada',
+    activity_updated: 'Actualizada',
+    activity_archived: 'Archivada',
+    activity_restored: 'Restaurada',
+    activity_deleted: 'Eliminada',
+    tags: 'Etiquetas',
+    newTagPlaceholder: 'Nueva etiqueta...',
+    add: 'Agregar',
+    saving: 'Guardando...',
+    reminderPersistentHint: 'Las notificaciones de recordatorio son persistentes. Seguiran apareciendo en el panel hasta que marques la nota como hecha o cambies su tipo.',
   },
 };
 

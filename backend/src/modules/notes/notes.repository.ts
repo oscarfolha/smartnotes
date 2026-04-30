@@ -1,5 +1,5 @@
 import prisma from '../../prisma/client';
-import { CreateNoteDto, UpdateNoteDto, NoteFiltersDto } from './notes.dto';
+import { CreateNoteDto, UpdateNoteDto, NoteFiltersDto, CreateFilterPresetDto } from './notes.dto';
 import { Prisma } from '@prisma/client';
 
 const noteInclude = {
@@ -251,5 +251,19 @@ export const notesRepository = {
       },
       include: noteInclude,
     });
+  },
+
+  async findFilterPresets() {
+    return prisma.filterPreset.findMany({
+      orderBy: [{ updatedAt: 'desc' }, { createdAt: 'desc' }],
+    });
+  },
+
+  async createFilterPreset(data: CreateFilterPresetDto) {
+    return prisma.filterPreset.create({ data });
+  },
+
+  async deleteFilterPreset(id: string) {
+    return prisma.filterPreset.delete({ where: { id } });
   },
 };
