@@ -85,6 +85,8 @@ Terminal A:
 cd backend
 npm run dev
 
+Note: backend `dev` and `build` auto-run Prisma client generation first.
+
 Terminal B:
 
 cd frontend
@@ -166,6 +168,11 @@ Local quick start:
 
 cd devops
 docker compose -f docker-compose.local.yml up --build -d
+
+## Troubleshooting
+
+- If backend startup fails with missing `.prisma/client/default`, run `npm --prefix backend run db:generate`.
+- If Prisma engine download fails behind a corporate proxy, set `HTTP_PROXY` and `HTTPS_PROXY` before running backend scripts.
 
 ## License
 

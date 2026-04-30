@@ -1,5 +1,5 @@
 import { notesRepository } from './notes.repository';
-import { CreateNoteDto, UpdateNoteDto, NoteFiltersDto } from './notes.dto';
+import { CreateNoteDto, UpdateNoteDto, NoteFiltersDto, CreateFilterPresetDto } from './notes.dto';
 import { aiService } from '../ai/ai.service';
 
 const SUMMARY_THRESHOLD = 300; // chars
@@ -96,5 +96,17 @@ export const notesService = {
 
   async getArchived() {
     return notesRepository.findArchived();
+  },
+
+  async getFilterPresets() {
+    return notesRepository.findFilterPresets();
+  },
+
+  async createFilterPreset(data: CreateFilterPresetDto) {
+    return notesRepository.createFilterPreset(data);
+  },
+
+  async deleteFilterPreset(id: string) {
+    return notesRepository.deleteFilterPreset(id);
   },
 };

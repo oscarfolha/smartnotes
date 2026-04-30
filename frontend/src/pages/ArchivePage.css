@@ -26,7 +26,8 @@
 }
 
 .archive-filter-control {
-  min-width: 10rem;
+  min-width: 13rem;
+  flex: 1 1 13rem;
 }
 
 .archive-selected-actions {

@@ -18,14 +18,18 @@ import {
   Snackbar,
   Alert,
   Tooltip,
+  useTheme,
 } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import ArchiveIcon from '@mui/icons-material/Archive';
 import DragIndicatorIcon from '@mui/icons-material/DragIndicator';
+import StarBorderIcon from '@mui/icons-material/StarBorder';
+import StarIcon from '@mui/icons-material/Star';
 import type { Note } from '../../types';
 import { useNotesStore } from '../../store/notes.store';
-import { useDeleteNote, useArchiveNote } from '../../hooks/useNotes';
+import { useDeleteNote, useArchiveNote, useUpdateNote } from '../../hooks/useNotes';
 import { useAppPreferences } from '../../contexts/appPreferences';
+import { noteTypeLabel, priorityLabel } from '../../utils/i18n';
 import './NoteCard.css';
 
 interface NoteCardProps {
@@ -38,8 +42,10 @@ interface NoteCardProps {
 export function NoteCard({ note, draggable, onDragStart, onDragEnd }: Readonly<NoteCardProps>) {
   const { openModal } = useNotesStore();
   const { t } = useAppPreferences();
+  const theme = useTheme();
   const deleteNote = useDeleteNote();
   const archiveNote = useArchiveNote();
+  const updateNote = useUpdateNote();
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [pendingAction, setPendingAction] = useState<'archive' | 'delete' | null>(null);
@@ -87,6 +93,20 @@ export function NoteCard({ note, draggable, onDragStart, onDragEnd }: Readonly<N
     setTimerId(null);
   };
 
+  const favoriteStyles = note.favorite
+    ? {
+        backgroundColor:
+          theme.palette.mode === 'dark'
+            ? 'rgba(255, 208, 90, 0.13)'
+            : 'rgba(255, 193, 7, 0.16)',
+        border: `1px solid ${
+          theme.palette.mode === 'dark'
+            ? 'rgba(255, 208, 90, 0.4)'
+            : 'rgba(255, 193, 7, 0.55)'
+        }`,
+      }
+    : undefined;
+
   return (
     <>
       <Card
@@ -94,6 +114,7 @@ export function NoteCard({ note, draggable, onDragStart, onDragEnd }: Readonly<N
         onDragStart={onDragStart}
         onDragEnd={onDragEnd}
         className="note-card"
+        sx={favoriteStyles}
         onClick={() => openModal({ noteId: note.id })}
       >
         <CardContent>
@@ -103,8 +124,8 @@ export function NoteCard({ note, draggable, onDragStart, onDragEnd }: Readonly<N
           </Stack>
 
           <Stack direction="row" spacing={1} className="note-card-meta">
-            <Chip label={note.type} size="small" color="primary" variant="outlined" />
-            <Chip label={note.priority} size="small" color="secondary" variant="outlined" />
+            <Chip label={noteTypeLabel(note.type, t)} size="small" color="primary" variant="outlined" />
+            <Chip label={priorityLabel(note.priority, t)} size="small" color="secondary" variant="outlined" />
           </Stack>
 
           <Typography variant="body2" color="text.secondary" className="note-card-content">
@@ -130,6 +151,19 @@ export function NoteCard({ note, draggable, onDragStart, onDragEnd }: Readonly<N
                 aria-label="Archive note"
               >
                 <ArchiveIcon fontSize="small" />
+              </IconButton>
+            </Tooltip>
+            <Tooltip title={t('favorite')}>
+              <IconButton
+                size="small"
+                color={note.favorite ? 'warning' : 'default'}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  updateNote.mutate({ id: note.id, data: { favorite: !note.favorite } });
+                }}
+                aria-label="Toggle favorite"
+              >
+                {note.favorite ? <StarIcon fontSize="small" /> : <StarBorderIcon fontSize="small" />}
               </IconButton>
             </Tooltip>
             <Tooltip title={t('delete')}>

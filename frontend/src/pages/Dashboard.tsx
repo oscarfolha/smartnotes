@@ -8,6 +8,7 @@ import { useNotesStore } from '../store/notes.store';
 import { NoteCard } from '../components/notes/NoteCard';
 import { useAppPreferences } from '../contexts/appPreferences';
 import type { Note } from '../types';
+import { splitFavoriteNotes } from '../utils/notes';
 import './Dashboard.css';
 
 type DashboardPeriod = 'week' | 'month' | 'year';
@@ -36,12 +37,17 @@ export function Dashboard() {
   const [orderedPeriodNotes, setOrderedPeriodNotes] = useState<Note[]>([]);
   const [dragId, setDragId] = useState<string | null>(null);
 
+  const activeNotes = useMemo(() => allNotes.filter((note) => !note.archived), [allNotes]);
+  const { favorites: favoriteNotes, regular: nonFavoriteNotes } = useMemo(
+    () => splitFavoriteNotes(activeNotes),
+    [activeNotes]
+  );
+
   const periodNotes = useMemo(
     () =>
-      allNotes
+      nonFavoriteNotes
         .filter(
           (n) => {
-            if (n.archived) return false;
             const noteDate = new Date(n.date);
             const now = new Date();
             if (period === 'week') return isSameWeek(noteDate, now, { weekStartsOn: 1 });
@@ -50,7 +56,7 @@ export function Dashboard() {
           }
         )
         .sort((a, b) => a.order - b.order),
-    [allNotes, period]
+    [nonFavoriteNotes, period]
   );
 
   useEffect(() => {
@@ -85,8 +91,8 @@ export function Dashboard() {
       value: periodNotes.length,
     },
     { label: t('pendingReminders'), value: pendingReminders.length },
-    { label: t('totalNotes'), value: allNotes.filter((n) => !n.archived).length },
-    { label: t('meetings'), value: allNotes.filter((n) => n.type === 'meeting' && !n.archived).length },
+    { label: t('totalNotes'), value: activeNotes.length },
+    { label: t('meetings'), value: activeNotes.filter((n) => n.type === 'meeting').length },
   ];
 
   return (
@@ -135,6 +141,21 @@ export function Dashboard() {
         </Card>
       )}
 
+      {favoriteNotes.length > 0 && (
+        <>
+          <Typography variant="h6" className="dashboard-notes-title">
+            {t('favorite')} ({favoriteNotes.length})
+          </Typography>
+          <Grid container spacing={2} className="dashboard-favorite-grid">
+            {favoriteNotes.map((note) => (
+              <Grid key={note.id} size={{ xs: 12, sm: 6, lg: 4 }}>
+                <NoteCard note={note} />
+              </Grid>
+            ))}
+          </Grid>
+        </>
+      )}
+
       <Typography variant="h6" className="dashboard-notes-title">
         {currentPeriodLabel} (drag to reorder)
       </Typography>
@@ -172,6 +193,12 @@ export function Dashboard() {
 
       <Fab
         className="page-fab"
+        sx={{
+          position: 'fixed',
+          right: { xs: 16, md: 24 },
+          bottom: { xs: 16, md: 24 },
+          zIndex: 1300,
+        }}
         color="primary"
         aria-label="add note"
         onClick={() => openModal({ initialDate: new Date().toISOString() })}

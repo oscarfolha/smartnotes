@@ -29,6 +29,7 @@ export interface Note {
   type: NoteType;
   date: string;
   priority: Priority;
+  favorite: boolean;
   order: number;
   archived: boolean;
   summary?: string;
@@ -56,6 +57,7 @@ export interface CreateNoteDto {
   type: NoteType;
   date: string;
   priority: Priority;
+  favorite?: boolean;
   tagIds?: string[];
   remindAt?: string;
   recurring?: boolean;
@@ -71,6 +73,17 @@ export interface NoteFilters {
   dateFrom?: string;
   dateTo?: string;
   search?: string;
+}
+
+export interface NoteFilterPreset {
+  id: string;
+  name: string;
+  search?: string;
+  type?: NoteType;
+  priority?: Priority;
+  tagId?: string;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface AIQueryResponse {

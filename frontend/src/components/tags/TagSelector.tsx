@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useTags, useCreateTag } from '../../hooks/useTags';
+import { useAppPreferences } from '../../contexts/appPreferences';
 import './TagSelector.css';
 
 interface TagSelectorProps {
@@ -10,6 +11,7 @@ interface TagSelectorProps {
 export function TagSelector({ selectedIds, onChange }: TagSelectorProps) {
   const { data: tags = [] } = useTags();
   const createTag = useCreateTag();
+  const { t } = useAppPreferences();
   const [newTag, setNewTag] = useState('');
 
   function toggle(id: string) {
@@ -30,7 +32,7 @@ export function TagSelector({ selectedIds, onChange }: TagSelectorProps) {
 
   return (
     <div className="tag-selector">
-      <label className="tag-selector-label" htmlFor="tag-selector-input">Tags</label>
+      <label className="tag-selector-label" htmlFor="tag-selector-input">{t('tags')}</label>
       <div className="tag-selector-list">
         {tags.map((tag) => (
           <button
@@ -49,7 +51,7 @@ export function TagSelector({ selectedIds, onChange }: TagSelectorProps) {
           value={newTag}
           onChange={(e) => setNewTag(e.target.value)}
           onKeyDown={(e) => e.key === 'Enter' && (e.preventDefault(), handleCreate())}
-          placeholder="New tag..."
+          placeholder={t('newTagPlaceholder')}
           className="tag-selector-input"
         />
         <button
@@ -58,7 +60,7 @@ export function TagSelector({ selectedIds, onChange }: TagSelectorProps) {
           disabled={!newTag.trim()}
           className="tag-selector-add"
         >
-          Add
+          {t('add')}
         </button>
       </div>
     </div>

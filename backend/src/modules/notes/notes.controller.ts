@@ -1,6 +1,6 @@
 import { FastifyRequest, FastifyReply } from 'fastify';
 import { notesService } from './notes.service';
-import { CreateNoteSchema, UpdateNoteSchema, NoteFiltersSchema } from './notes.dto';
+import { CreateNoteSchema, UpdateNoteSchema, NoteFiltersSchema, CreateFilterPresetSchema } from './notes.dto';
 
 export const notesController = {
   async getAll(request: FastifyRequest, reply: FastifyReply) {
@@ -49,5 +49,21 @@ export const notesController = {
   async getArchived(request: FastifyRequest, reply: FastifyReply) {
     const notes = await notesService.getArchived();
     return reply.send(notes);
+  },
+
+  async getFilterPresets(request: FastifyRequest, reply: FastifyReply) {
+    const presets = await notesService.getFilterPresets();
+    return reply.send(presets);
+  },
+
+  async createFilterPreset(request: FastifyRequest, reply: FastifyReply) {
+    const data = CreateFilterPresetSchema.parse(request.body);
+    const preset = await notesService.createFilterPreset(data);
+    return reply.status(201).send(preset);
+  },
+
+  async deleteFilterPreset(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply) {
+    await notesService.deleteFilterPreset(request.params.id);
+    return reply.status(204).send();
   },
 };

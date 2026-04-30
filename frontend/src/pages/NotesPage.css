@@ -4,15 +4,21 @@
 }
 
 .notes-filter-control {
-  min-width: 10rem;
+  min-width: 13rem;
+  flex: 1 1 13rem;
 }
 
 .notes-preset-stack {
   margin-top: 0.75rem;
 }
 
+.notes-preset-stack .MuiTextField-root {
+  flex: 1 1 13rem;
+}
+
 .notes-preset-load {
-  min-width: 11.25rem;
+  min-width: 13rem;
+  flex: 1 1 13rem;
 }
 
 .notes-quick-presets {
@@ -27,4 +33,13 @@
 
 .notes-item-wrapper {
   padding: 0.25rem;
+}
+
+.notes-favorites-title {
+  margin-bottom: 0.5rem;
+  font-weight: 700;
+}
+
+.notes-favorites-grid {
+  margin-bottom: 0.9rem;
 }
